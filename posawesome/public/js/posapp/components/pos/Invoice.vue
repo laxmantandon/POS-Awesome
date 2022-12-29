@@ -105,6 +105,22 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row align="center" class="items px-2 py-1">
+        <v-col
+          cols="9"
+          class="pb-2 pr-0"
+        >
+          <Pets></Pets>
+        </v-col>
+      </v-row>
+      <v-row align="center" class="items px-2 py-1">
+        <v-col
+          cols="9"
+          class="pb-2 pr-0"
+        >
+          <HairStylist></HairStylist>
+        </v-col>
+      </v-row>
 
       <div class="my-0 py-0 overflow-y-auto" style="max-height: 60vh">
         <template @mouseover="style = 'cursor: pointer'">
@@ -707,6 +723,8 @@
 <script>
 import { evntBus } from '../../bus';
 import Customer from './Customer.vue';
+import Pets from './Pets.vue';
+import HairStylist from './HairStylist.vue';
 
 export default {
   data() {
@@ -752,11 +770,14 @@ export default {
         { text: __('Amount'), value: 'amount', align: 'center' },
         { text: __('is Offer'), value: 'posa_is_offer', align: 'center' },
       ],
+      customer_pets: []
     };
   },
 
   components: {
     Customer,
+    Pets,
+    HairStylist
   },
 
   computed: {
@@ -1053,6 +1074,7 @@ export default {
       doc.posa_coupons = this.posa_coupons;
       doc.posa_delivery_charges = this.selcted_delivery_charges.name;
       doc.posa_delivery_charges_rate = this.delivery_charges_rate || 0;
+      doc.neo_customer_pets = this.customer_pets;
       return doc;
     },
 
@@ -2476,6 +2498,12 @@ export default {
     evntBus.$on('set_new_line', (data) => {
       this.new_line = data;
     });
+    evntBus.$on('clear_items', (data) => {
+      this.items = [];
+    });
+    evntBus.$on('customer_pets', (data)=> {
+      this.customer_pets = data;
+    })
     document.addEventListener('keydown', this.shortOpenPayment.bind(this));
     document.addEventListener('keydown', this.shortDeleteFirstItem.bind(this));
     document.addEventListener('keydown', this.shortOpenFirstItem.bind(this));
