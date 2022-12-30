@@ -114,7 +114,7 @@ export default {
         textFour.indexOf(searchText) > -1 ||
         textFifth.indexOf(searchText) > -1
       );
-    },
+    }
   },
 
   computed: {},
@@ -127,6 +127,10 @@ export default {
       });
       evntBus.$on('set_customer', (customer) => {
         this.customer = customer;
+        console.log('Customer.vue', this.pos_profile.pos_profile.neo_is_dog_salon)
+        if (this.pos_profile.pos_profile.neo_is_dog_salon == 1 && (customer != undefined || customer == '')) {
+          evntBus.$emit('open_dog_salon_dialog', customer)
+        }
       });
       evntBus.$on('add_customer_to_list', (customer) => {
         this.customers.push(customer);

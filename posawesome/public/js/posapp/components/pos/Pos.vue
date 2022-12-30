@@ -1,6 +1,7 @@
 <template>
   <div fluid>
     <ClosingDialog></ClosingDialog>
+    <DogSalon></DogSalon>
     <Drafts></Drafts>
     <Returns></Returns>
     <NewCustomer></NewCustomer>
@@ -72,6 +73,7 @@ import Payments from './Payments.vue';
 import PosOffers from './PosOffers.vue';
 import PosCoupons from './PosCoupons.vue';
 import Drafts from './Drafts.vue';
+import DogSalon from './DogSalon.vue';
 import ClosingDialog from './ClosingDialog.vue';
 import NewCustomer from './NewCustomer.vue';
 import EditCustomer from './EditCustomer.vue';
@@ -79,6 +81,7 @@ import NewAddress from './NewAddress.vue';
 import Variants from './Variants.vue';
 import Returns from './Returns.vue';
 import MpesaPayments from './Mpesa-Payments.vue';
+
 
 export default {
   data: function () {
@@ -98,6 +101,7 @@ export default {
     OpeningDialog,
     Payments,
     Drafts,
+    DogSalon,
     ClosingDialog,
     NewCustomer,
     Returns,
@@ -198,7 +202,7 @@ export default {
         this.get_offers(this.pos_profile.name);
         this.pos_opening_shift = data.pos_opening_shift;
         evntBus.$emit('register_pos_profile', data);
-        console.info('LoadPosProfile');
+        console.info('LoadPosProfile', data);
       });
       evntBus.$on('show_payment', (data) => {
         this.payment = true ? data === 'true' : false;

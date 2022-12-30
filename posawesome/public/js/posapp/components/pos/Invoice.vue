@@ -105,7 +105,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row align="center" class="items px-2 py-1">
+      <v-row v-if="pos_profile.neo_is_dog_playground" align="center" class="items px-2 py-1">
         <v-col
           cols="9"
           class="pb-2 pr-0"
