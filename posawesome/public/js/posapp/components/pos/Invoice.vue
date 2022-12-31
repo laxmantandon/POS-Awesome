@@ -113,14 +113,6 @@
           <Pets></Pets>
         </v-col>
       </v-row>
-      <v-row align="center" class="items px-2 py-1">
-        <v-col
-          cols="9"
-          class="pb-2 pr-0"
-        >
-          <HairStylist></HairStylist>
-        </v-col>
-      </v-row>
 
       <div class="my-0 py-0 overflow-y-auto" style="max-height: 60vh">
         <template @mouseover="style = 'cursor: pointer'">
@@ -724,7 +716,6 @@
 import { evntBus } from '../../bus';
 import Customer from './Customer.vue';
 import Pets from './Pets.vue';
-import HairStylist from './HairStylist.vue';
 
 export default {
   data() {
@@ -777,7 +768,6 @@ export default {
   components: {
     Customer,
     Pets,
-    HairStylist
   },
 
   computed: {
