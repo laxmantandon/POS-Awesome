@@ -198,15 +198,15 @@ export default {
               });
               args.name = r.message.name;
               frappe.utils.play_sound('submit');
-              evntBus.$emit('reload_pets', this.customer);
+              evntBus.$emit('reload_pets', vm.customer);
               vm.pet_name = '';
               vm.primary_breed = '';
               vm.pet_type = '';
               vm.color = '';
               vm.gender = '';
               vm.weight_in_kgs = '';
-              vm.date_of_birthday = '';
-              vm.customer = '';
+              vm.date_of_birth = '';
+              // vm.customer = '';
               vm.petDialog = false;
             }
           },
