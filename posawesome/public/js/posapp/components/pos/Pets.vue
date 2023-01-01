@@ -26,7 +26,7 @@ export default {
         vm = this;
         frappe.db.get_list("Pet", { fields: ["name", "pet_name"], filters: { customer: selected_customer } }).then((res) => {
           res.forEach(pet => {
-            console.log(pet)
+            // console.log(pet)
             p = { "pet_id": pet.name, "pet_name": pet.pet_name }
             this.customer_pets.push(p)
           })
@@ -69,56 +69,55 @@ export default {
     },
 
     get_selected_pets(data) {
-      max_pets = frappe.db.get_single_value("Neo Settings", "max_pet_allowed")
-      if (data.length > max_pets) {
-        evntBus.$emit("clear_items")
-        vm = this;
+      frappe.db.get_single_value("Neo Settings", "max_pet_allowed").then(max_pet => {
+        if (data.length > max_pet) {
+          evntBus.$emit("clear_items")
+          vm = this;
 
-        frappe.db.get_doc("Item", vm.base_item).then(d => {
-          // console.log(d)
-          let item1 = {
-            item_code: d.item_code,
-            item_name: d.item_name,
-            qty: 1,
-            uom: d.stock_uom,
-            stock_uom: d.stock_uom
-          }
-          evntBus.$emit('add_item', item1);
-        });
+          frappe.db.get_doc("Item", vm.base_item).then(d => {
+            // console.log(d)
+            let item1 = {
+              item_code: d.item_code,
+              item_name: d.item_name,
+              qty: 1,
+              uom: d.stock_uom,
+              stock_uom: d.stock_uom
+            }
+            evntBus.$emit('add_item', item1);
+          });
 
-        frappe.db.get_doc("Item", vm.additional_item).then(e => {
-          // console.log(e)
-          let item2 = {
-            item_code: e.item_code,
-            item_name: e.item_name,
-            qty: vm.pets.length - 2,
-            uom: e.stock_uom,
-            stock_uom: e.stock_uom
-          }
-          evntBus.$emit('add_item', item2);
-        });
+          frappe.db.get_doc("Item", vm.additional_item).then(e => {
+            // console.log(e)
+            let item2 = {
+              item_code: e.item_code,
+              item_name: e.item_name,
+              qty: vm.pets.length - 2,
+              uom: e.stock_uom,
+              stock_uom: e.stock_uom
+            }
+            evntBus.$emit('add_item', item2);
+          });
 
-        // evntBus.$emit('add_item', item1);
-        // evntBus.$emit('add_item', item2);
+          // evntBus.$emit('add_item', item1);
+          // evntBus.$emit('add_item', item2);
 
-      } else {
-        evntBus.$emit("clear_items")
-        frappe.db.get_doc("Item", vm.base_item).then(d => {
-          // console.log(d)
-          let item1 = {
-            item_code: d.item_code,
-            item_name: d.item_name,
-            qty: 1,
-            uom: d.stock_uom,
-            stock_uom: d.stock_uom
-          }
-          evntBus.$emit('add_item', item1);
-        })
+        } else {
+          evntBus.$emit("clear_items")
+          frappe.db.get_doc("Item", vm.base_item).then(d => {
+            // console.log(d)
+            let item1 = {
+              item_code: d.item_code,
+              item_name: d.item_name,
+              qty: 1,
+              uom: d.stock_uom,
+              stock_uom: d.stock_uom
+            }
+            evntBus.$emit('add_item', item1);
+          })
 
-      }
+        }
+      })
     }
-
-
   },
 
   computed: {},
