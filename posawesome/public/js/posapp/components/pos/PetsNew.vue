@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="petDialog" max-width="600px">
+    <v-dialog v-model="petDialog" max-width="600px" persistent>
       <v-card>
         <v-card-title>
           <span class="headline primary--text">{{ __('New pet') }}</span>
