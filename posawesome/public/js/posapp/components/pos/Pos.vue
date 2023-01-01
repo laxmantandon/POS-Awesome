@@ -7,6 +7,7 @@
     <NewCustomer></NewCustomer>
     <EditCustomer></EditCustomer>
     <NewAddress></NewAddress>
+    <PetsNew></PetsNew>
     <MpesaPayments></MpesaPayments>
     <Variants></Variants>
     <OpeningDialog v-if="dialog" :dialog="dialog"></OpeningDialog>
@@ -77,6 +78,7 @@ import DogSalon from './DogSalon.vue';
 import ClosingDialog from './ClosingDialog.vue';
 import NewCustomer from './NewCustomer.vue';
 import EditCustomer from './EditCustomer.vue';
+import PetsNew from './PetsNew.vue';
 import NewAddress from './NewAddress.vue';
 import Variants from './Variants.vue';
 import Returns from './Returns.vue';
@@ -111,6 +113,7 @@ export default {
     NewAddress,
     Variants,
     MpesaPayments,
+    PetsNew,
   },
 
   methods: {

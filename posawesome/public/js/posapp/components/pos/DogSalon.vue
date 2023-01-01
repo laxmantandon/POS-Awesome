@@ -148,18 +148,38 @@
       get_services(salon) {
         // this.all_services = [];
         vm = this;
-        frappe.db.get_list("Neo Groomer Services", { fields: ["service_item", "item_name"], filters: { parent: salon.groomer } }).then((res) => {
-          console.log(res)
-          vm.salon_data.forEach(d => {
-            res.forEach(a => {
-              if (d.groomer == salon.groomer) {
-                d.services.push({"service_item": a.service_item, "item_name": a.item_name});
-              }
+
+        frappe.call({
+          method: 'posawesome.posawesome.api.neoapi.get_groomer_services',
+          args: {
+            groomer: salon.groomer,
+          },
+          callback: (r) => {
+            vm.salon_data.forEach(d => {
+              r.message.forEach(a => {
+                if (d.groomer == salon.groomer) {
+                  d.services.push({ "service_item": a.service_item, "item_name": a.item_name });
+                }
+              })
             })
-          })
-        }).catch(e => {
-          console.log('Error', e)
-        })
+          },
+          error: (e) => {
+            console.log(e)
+          }
+        });
+
+        // frappe.db.get_list("Neo Groomer Services", { fields: ["service_item", "item_name"], filters: { parent: salon.groomer } }).then((res) => {
+        //   console.log(res)
+        //   vm.salon_data.forEach(d => {
+        //     res.forEach(a => {
+        //       if (d.groomer == salon.groomer) {
+        //         d.services.push({"service_item": a.service_item, "item_name": a.item_name});
+        //       }
+        //     })
+        //   })
+        // }).catch(e => {
+        //   console.log('Error', e)
+        // })
       },
 
       get_selected_services() {

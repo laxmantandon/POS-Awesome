@@ -127,7 +127,6 @@ export default {
       });
       evntBus.$on('set_customer', (customer) => {
         this.customer = customer;
-        console.log('Customer.vue', this.pos_profile.pos_profile.neo_is_dog_salon)
         if (this.pos_profile.pos_profile.neo_is_dog_salon == 1 && (customer != undefined || customer == '')) {
           evntBus.$emit('open_dog_salon_dialog', customer)
         }

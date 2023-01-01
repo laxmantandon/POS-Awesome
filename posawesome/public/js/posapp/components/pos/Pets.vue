@@ -1,7 +1,33 @@
 <template>
-  <div v-if="show_pets">
+  <!-- <div v-if="show_pets">
     <v-select :items="customer_pets" item-text="pet_name" item-value="pet_id" :label="frappe._('Customer Pets')" dense outlined
       hide-details v-model="pets" multiple @change="get_selected_pets" background-color="white"></v-select>
+  </div> -->
+
+  <div>
+    <v-autocomplete
+      dense
+      chips
+      deletable-chips
+      multiple
+      small-chips
+      clearable
+      auto-select-first
+      outlined
+      color="primary"
+      :label="frappe._('Pets')"
+      v-model="pets"
+      :items="customer_pets"
+      item-text="pet_name"
+      item-value="pet_id"
+      background-color="white"
+      :no-data-text="__('No Pets Found')"
+      hide-details
+      append-icon="mdi-plus"
+      @click:append="new_pet"
+      @change="get_selected_pets"
+    >
+    </v-autocomplete>
   </div>
 </template>
   
@@ -13,6 +39,7 @@ export default {
     customer_pets: [],
     base_item: "",
     additional_item: "",
+    pets: [],
   }),
 
   methods: {
@@ -69,8 +96,8 @@ export default {
     },
 
     get_selected_pets(data) {
-      frappe.db.get_single_value("Neo Settings", "max_pet_allowed").then(max_pet => {
-        if (data.length > max_pet) {
+      frappe.db.get_single_value("Neo Settings", "max_pet_allowed").then(max_pets => {
+        if (data.length > max_pets) {
           evntBus.$emit("clear_items")
           vm = this;
 
@@ -91,7 +118,7 @@ export default {
             let item2 = {
               item_code: e.item_code,
               item_name: e.item_name,
-              qty: vm.pets.length - 2,
+              qty: vm.pets.length - max_pets,
               uom: e.stock_uom,
               stock_uom: e.stock_uom
             }
@@ -117,7 +144,11 @@ export default {
 
         }
       })
-    }
+    },
+
+    new_pet() {
+      evntBus.$emit('open_new_pet');
+    },
   },
 
   computed: {},
@@ -132,7 +163,12 @@ export default {
       this.get_additional_item();
       this.get_customer_pets(data)
 
-    })
+    });
+
+    evntBus.$on('reload_pets', (customer) => {
+      this.get_customer_pets(customer)
+    });
+    
   },
 
   watch: {
