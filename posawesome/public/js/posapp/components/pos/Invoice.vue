@@ -1065,6 +1065,7 @@ export default {
       doc.posa_delivery_charges = this.selcted_delivery_charges.name;
       doc.posa_delivery_charges_rate = this.delivery_charges_rate || 0;
       doc.neo_customer_pets = this.customer_pets;
+      doc.neo_order_type = "OF"
       return doc;
     },
 

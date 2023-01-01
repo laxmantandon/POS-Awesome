@@ -40,22 +40,37 @@ export default {
 
     get_base_item() {
       vm = this;
-      frappe.db.get_single_value("Neo Settings", "pos_item_name").then(pos_item_name => {
+
+      if (moment(frappe.datetime.now_date()).format("dddd") == "Sunday" || moment(frappe.datetime.now_date()).format("dddd") == "Saturday") {
+        frappe.db.get_single_value("Neo Settings", "pos_item_name_weekend").then(pos_item_name => {
+          vm.base_item = pos_item_name;
+        });
+
+      } else {
+        frappe.db.get_single_value("Neo Settings", "pos_item_name").then(pos_item_name => {
         vm.base_item = pos_item_name;
       });
+
+      }
 
     },
 
     get_additional_item() {
       vm = this;
-      frappe.db.get_single_value("Neo Settings", "pos_additional_item_name").then(pos_add_item_name => {
-        vm.additional_item = pos_add_item_name;
-      });
+      if (moment(frappe.datetime.now_date()).format("dddd") == "Sunday" || moment(frappe.datetime.now_date()).format("dddd") == "Saturday") {
+        frappe.db.get_single_value("Neo Settings", "pos_additional_item_name_weekend").then(pos_add_item_name => {
+          vm.additional_item = pos_add_item_name;
+        });
+      } else {
+        frappe.db.get_single_value("Neo Settings", "pos_additional_item_name").then(pos_add_item_name => {
+          vm.additional_item = pos_add_item_name;
+        });
+      }
     },
 
     get_selected_pets(data) {
-      console.log(data)
-      if (data.length > 2) {
+      max_pets = frappe.db.get_single_value("Neo Settings", "max_pet_allowed")
+      if (data.length > max_pets) {
         evntBus.$emit("clear_items")
         vm = this;
 
