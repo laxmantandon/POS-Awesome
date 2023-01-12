@@ -108,7 +108,10 @@ export default {
               item_name: d.item_name,
               qty: 1,
               uom: d.stock_uom,
-              stock_uom: d.stock_uom
+              stock_uom: d.stock_uom,
+              item_group: d.item_group,
+              brand: d.brand,
+              description: d.description
             }
             evntBus.$emit('add_item', item1);
           });
@@ -120,7 +123,10 @@ export default {
               item_name: e.item_name,
               qty: vm.pets.length - max_pets,
               uom: e.stock_uom,
-              stock_uom: e.stock_uom
+              stock_uom: e.stock_uom,
+              item_group: e.item_group,
+              brand: e.brand,
+              description: e.description
             }
             evntBus.$emit('add_item', item2);
           });
@@ -137,7 +143,10 @@ export default {
               item_name: d.item_name,
               qty: 1,
               uom: d.stock_uom,
-              stock_uom: d.stock_uom
+              stock_uom: d.stock_uom,
+              item_group: d.item_group,
+              brand: d.brand,
+              description: d.description
             }
             evntBus.$emit('add_item', item1);
           })

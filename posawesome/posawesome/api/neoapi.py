@@ -31,3 +31,11 @@ def create_pet(
 def get_groomer_services(groomer):
     groomer = frappe.get_doc("Neo Groomer", groomer)
     return groomer.services
+
+@frappe.whitelist()
+def get_breeds():
+    return frappe.db.get_all("Pet Breed")
+
+@frappe.whitelist()
+def get_territory():
+    return frappe.db.get_all("Territory")

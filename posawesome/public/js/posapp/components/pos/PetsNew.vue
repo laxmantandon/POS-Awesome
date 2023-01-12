@@ -156,21 +156,22 @@ export default {
     close_dialog() {
       this.petDialog = false;
     },
+
     getPetBreed() {
-      if (this.primary_breeds.length > 0) return;
+      this.primary_breeds = [];
       const vm = this;
-      frappe.db
-        .get_list('Pet Breed', {
-          fields: ['name'],
-          page_length: 1000,
-        })
-        .then((data) => {
-          if (data.length > 0) {
-            data.forEach((el) => {
-              vm.primary_breeds.push(el.name);
-            });
-          }
-        });
+      frappe.call({
+        method: 'posawesome.posawesome.api.neoapi.get_breeds',
+        callback: (r) => {
+          console.log(r)
+          r.message.forEach(a => {
+            vm.primary_breeds.push(a.name);
+          })
+        },
+        error: (e) => {
+          console.log(e)
+        }
+      });
     },
 
     submit_dialog() {
@@ -198,7 +199,15 @@ export default {
               });
               args.name = r.message.name;
               frappe.utils.play_sound('submit');
-              evntBus.$emit('reload_pets', vm.customer);
+
+              if (this.pos_profile.neo_is_dog_salon) {
+                evntBus.$emit('reload_salon_pets', vm.customer);
+              }
+              if (this.pos_profile.neo_is_dog_playground) {
+                evntBus.$emit('reload_pets', vm.customer);
+              }
+              
+              // evntBus.$emit('reload_pets', vm.customer);
               vm.pet_name = '';
               vm.primary_breed = '';
               vm.pet_type = '';

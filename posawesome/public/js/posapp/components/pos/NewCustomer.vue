@@ -177,20 +177,30 @@ export default {
         });
     },
     getCustomerTerritorys() {
-      if (this.territorys.length > 0) return;
-      const vm = this;
-      frappe.db
-        .get_list('Territory', {
-          fields: ['name'],
-          page_length: 1000,
-        })
-        .then((data) => {
-          if (data.length > 0) {
-            data.forEach((el) => {
-              vm.territorys.push(el.name);
-            });
-          }
-        });
+      this.territorys = [];
+      vm = this;
+      frappe.call({
+        method: "posawesome.posawesome.api.neoapi.get_territory",
+        callback: (r) => {
+          r.message.forEach(s => {
+            vm.territorys.push(s.name)
+          })
+        }
+      })
+      // if (this.territorys.length > 0) return;
+      // const vm = this;
+      // frappe.db
+      //   .get_list('Territory', {
+      //     fields: ['name'],
+      //     page_length: 1000,
+      //   })
+      //   .then((data) => {
+      //     if (data.length > 0) {
+      //       data.forEach((el) => {
+      //         vm.territorys.push(el.name);
+      //       });
+      //     }
+      //   });
     },
     submit_dialog() {
       if (this.customer_name) {
