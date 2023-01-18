@@ -8,7 +8,7 @@ import json
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import getdate, get_datetime, flt
-from collections import defaultdict
+import collections
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 
 
@@ -29,7 +29,12 @@ class POSClosingShift(Document):
             frappe.throw(_("Selected POS Opening Shift should be open."), title=_(
                 "Invalid Opening Entry"))
 
+    def before_submit(self):
+        self.set_stock_group_sales()
+        self.set_neo_stats()
+
     def on_submit(self):
+                
         opening_entry = frappe.get_doc(
             "POS Opening Shift", self.pos_opening_shift)
         opening_entry.pos_closing_shift = self.name
@@ -58,6 +63,30 @@ class POSClosingShift(Document):
                                       {"data": self, "currency": currency})
 
 
+    def set_stock_group_sales(self):
+        invoices = []
+        for inv in self.pos_transactions:
+            invoices.append(inv.sales_invoice)
+            
+        group_sales = frappe.db.sql("""
+                SELECT
+                    sii.item_group, SUM(sii.amount) amount
+                FROM `tabSales Invoice Item` sii
+                WHERE sii.parent in (%s)
+        """ % ",".join(["%s"] * len(invoices)), invoices, as_dict=True)
+        
+        for gs in group_sales:
+            self.append("neo_stock_group", {
+                "item_group":gs.item_group,
+                "amount":gs.amount
+            })
+
+    def set_neo_stats(self):
+        self.neo_no_of_customers = len(collections.Counter(t.customer for t in self.pos_transactions))
+        self.neo_avg_amount_per_customer = self.grand_total / self.neo_no_of_customers
+        self.neo_no_of_invoices = sum(collections.Counter(t.sales_invoice for t in self.pos_transactions).values())
+        self.neo_avg_amount_per_invoice = self.grand_total / self.neo_no_of_invoices
+    
 @frappe.whitelist()
 def get_cashiers(doctype, txt, searchfield, start, page_len, filters):
     cashiers_list = frappe.get_all(

@@ -30,7 +30,15 @@
   "column_break_16",
   "taxes",
   "section_break_14",
-  "amended_from"
+  "amended_from",
+  "section_break_25",
+  "neo_stock_group",
+  "section_break_27",
+  "neo_no_of_customers",
+  "neo_avg_amount_per_customer",
+  "column_break_30",
+  "neo_no_of_invoices",
+  "neo_avg_amount_per_invoice"
  ],
  "fields": [
   {
@@ -184,14 +192,57 @@
    "label": "POS Opening Shift",
    "options": "POS Opening Shift",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_25",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "neo_stock_group",
+   "fieldtype": "Table",
+   "label": "Item Group",
+   "options": "Neo Stock Group Sales"
+  },
+  {
+   "fieldname": "section_break_27",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "neo_no_of_customers",
+   "fieldtype": "Data",
+   "label": "No of Customers",
+   "read_only": 1
+  },
+  {
+   "fieldname": "neo_avg_amount_per_customer",
+   "fieldtype": "Data",
+   "label": "Avg Amount Per Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "neo_no_of_invoices",
+   "fieldtype": "Data",
+   "label": "No of Invoices",
+   "read_only": 1
+  },
+  {
+   "fieldname": "neo_avg_amount_per_invoice",
+   "fieldtype": "Data",
+   "label": "Avg Amount Per Invoice",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-22 14:59:27.483244",
+ "modified": "2023-01-18 14:13:04.647550",
  "modified_by": "Administrator",
  "module": "POSAwesome",
  "name": "POS Closing Shift",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -238,5 +289,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
