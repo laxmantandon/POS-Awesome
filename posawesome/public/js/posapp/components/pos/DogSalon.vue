@@ -272,8 +272,7 @@ export default {
               uom: d.stock_uom,
               stock_uom: d.stock_uom,
               item_group: d.item_group,
-              brand: d.brand,
-              description: d.description
+              brand: d.brand
             }
             evntBus.$emit('add_item', item1);
           });
