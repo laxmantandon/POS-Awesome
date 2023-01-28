@@ -65,27 +65,29 @@ class POSClosingShift(Document):
 
     def set_stock_group_sales(self):
         invoices = []
-        for inv in self.pos_transactions:
-            invoices.append(inv.sales_invoice)
+        if len(self.pos_transactions) > 0:
+            for inv in self.pos_transactions:
+                invoices.append(inv.sales_invoice)
+                
+            group_sales = frappe.db.sql("""
+                    SELECT
+                        sii.item_group, SUM(sii.amount) amount
+                    FROM `tabSales Invoice Item` sii
+                    WHERE sii.parent in (%s) GROUP BY sii.item_group
+            """ % ",".join(["%s"] * len(invoices)), invoices, as_dict=True)
             
-        group_sales = frappe.db.sql("""
-                SELECT
-                    sii.item_group, SUM(sii.amount) amount
-                FROM `tabSales Invoice Item` sii
-                WHERE sii.parent in (%s)
-        """ % ",".join(["%s"] * len(invoices)), invoices, as_dict=True)
-        
-        for gs in group_sales:
-            self.append("neo_stock_group", {
-                "item_group":gs.item_group,
-                "amount":gs.amount
-            })
+            for gs in group_sales:
+                self.append("neo_stock_group", {
+                    "item_group":gs.item_group,
+                    "amount":gs.amount
+                })
 
     def set_neo_stats(self):
-        self.neo_no_of_customers = len(collections.Counter(t.customer for t in self.pos_transactions))
-        self.neo_avg_amount_per_customer = self.grand_total / self.neo_no_of_customers
-        self.neo_no_of_invoices = sum(collections.Counter(t.sales_invoice for t in self.pos_transactions).values())
-        self.neo_avg_amount_per_invoice = self.grand_total / self.neo_no_of_invoices
+        if len(self.pos_transactions) > 0:
+            self.neo_no_of_customers = len(collections.Counter(t.customer for t in self.pos_transactions))
+            self.neo_avg_amount_per_customer = self.grand_total / self.neo_no_of_customers
+            self.neo_no_of_invoices = sum(collections.Counter(t.sales_invoice for t in self.pos_transactions).values())
+            self.neo_avg_amount_per_invoice = self.grand_total / self.neo_no_of_invoices
     
 @frappe.whitelist()
 def get_cashiers(doctype, txt, searchfield, start, page_len, filters):

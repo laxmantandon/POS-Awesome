@@ -517,6 +517,27 @@ def submit_invoice(invoice, data):
             invoice_doc, data, is_payment_entry, total_cash, cash_account
         )
 
+    try:
+        if data.get("salon_data"):
+            salon_data = data.get("salon_data")
+            for salon in salon_data:
+                frappe.get_doc({
+                    "booking_date": invoice_doc.get("posting_date"),
+                    "booking_for": "Dog Salon",
+                    "customer": invoice_doc.get("customer"),
+                    "doctype": "Neo Time Slot Booking",
+                    "hair_stylist": salon.get("groomer"),
+                    "customer_pet": salon.get("pet"),
+                    "posting_date": invoice_doc.get("posting_date"),
+                    "day": frappe.utils.data.get_weekday(frappe.utils.getdate(invoice_doc.get("posting_date"))),
+                    "start_time": salon.get("timeslot").split()[0],
+                    "end_time": salon.get("timeslot").split()[1],
+                    "against_invoice": invoice_doc.get("name")
+                }).save(ignore_permissions=True).submit()
+    except Exception as e:
+        frappe.log_error(str(e))
+        frappe.throw(str(e))
+        
     return {"name": invoice_doc.name, "status": invoice_doc.docstatus}
 
 

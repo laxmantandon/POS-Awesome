@@ -1113,6 +1113,7 @@ export default {
     },
 
     update_invoice(doc) {
+      console.log('update_invoice', doc)
       const vm = this;
       frappe.call({
         method: 'posawesome.posawesome.api.posapp.update_invoice',

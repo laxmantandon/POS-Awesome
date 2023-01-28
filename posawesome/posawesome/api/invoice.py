@@ -26,7 +26,6 @@ def before_submit(doc, method):
     create_sales_order(doc)
     update_coupon(doc, "used")
 
-
 def before_cancel(doc, method):
     update_coupon(doc, "cancelled")
 

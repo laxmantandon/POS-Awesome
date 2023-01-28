@@ -83,7 +83,8 @@ export default {
       services: [],
       timeslot: "",
       timeslots: [],
-    }]
+    }],
+    customer_pets: []
   }),
   watch: {},
   methods: {
@@ -129,25 +130,52 @@ export default {
 
     get_time_slot(salon) {
       var vm = this;
-      frappe.db.get_doc("Neo Groomer", salon.groomer)
-        .then(doc => {
-          doc.time_slot.forEach(ts => {
-            frappe.db.count("Neo Time Slot Booking", filters = { "hair_stylist": salon.groomer, "booking_date": frappe.datetime.now_date(), "start_time": ts.start_time, "end_time": ts.end_time, "booking_for": "Dog Salon" })
-              .then((tsb) => {
-                if (tsb >= 1) {
-                  
-                } else {
-                  // var x = moment(frappe.datetime.now_time(), 'hh:mm:ss').diff(moment(ts.start_time, 'hh:mm:ss'), 'hour')
-                    slot = { "slot_id": `${ts.start_time} ${ts.end_time}` }
-                    vm.salon_data.forEach(d => {
-                      if (d.pet == salon.pet) {
-                        d.timeslots.push(slot)
-                      }
-                    })
+
+      frappe.call({
+        method: "posawesome.posawesome.api.neoapi.get_time_slot",
+        args: {
+          "groomer": salon.groomer,
+          "booking_date": frappe.datetime.now_date()
+        },
+        callback: function(r) {
+          if (!r.exc) {
+            if (r.message.length > 0) {
+              vm.salon_data.forEach(d => {
+                if (d.pet == salon.pet) {
+                  d.timeslots = r.message
                 }
               })
-          })
-        })
+            } else {
+              evntBus.$emit('show_mesage', {
+                text: __(`Oops! No Time Slot Available for ${salon.groomer}`),
+                color: 'error',
+              });
+            }
+          }
+        }
+      })
+
+      // frappe.db.get_doc("Neo Groomer", salon.groomer)
+        // .then(doc => {
+          
+          // doc.time_slot.forEach(ts => {
+          //   frappe.db.count("Neo Time Slot Booking", filters = { "hair_stylist": salon.groomer, "booking_date": frappe.datetime.now_date(), "start_time": ts.start_time, "end_time": ts.end_time, "booking_for": "Dog Salon" })
+          //     .then((tsb) => {
+          //       console.log({ "hair_stylist": salon.groomer, "booking_date": frappe.datetime.now_date(), "start_time": ts.start_time, "end_time": ts.end_time, "booking_for": "Dog Salon" })
+          //       if (tsb >= 1) {
+                  
+          //       } else {
+          //         // var x = moment(frappe.datetime.now_time(), 'hh:mm:ss').diff(moment(ts.start_time, 'hh:mm:ss'), 'hour')
+          //           slot = { "slot_id": `${ts.start_time} ${ts.end_time}` }
+          //           vm.salon_data.forEach(d => {
+          //             if (d.pet == salon.pet) {
+          //               d.timeslots.push({slot})
+          //             }
+          //           })
+          //       }
+          //     })
+          // })
+        // })
     },
 
     get_selected_timeslot() {
@@ -221,7 +249,16 @@ export default {
     },
 
     submit_dog_salon_dialog() {
-      console.log(this.salon_data)
+      this.salon_data.forEach(item => {
+        if (item.timeslot == undefined || item.timeslot == "") {
+          evntBus.$emit('show_mesage', {
+            text: __(`Time Slot is not specified for ${item.groomer}` ),
+            color: 'error',
+          });
+          return
+        }
+      })
+      
       vm = this;
       this.salon_data.forEach(pet => {
         pet.service.forEach(item => {
@@ -230,6 +267,7 @@ export default {
             let item1 = {
               item_code: d.item_code,
               item_name: d.item_name,
+              description: d.description,
               qty: 1,
               uom: d.stock_uom,
               stock_uom: d.stock_uom,
@@ -242,6 +280,12 @@ export default {
         })
       })
       // evntBus.$emit('submit_dog_salon_dialog', this.salon_data);
+      console.log('Salon_data', this.salon_data)
+      this.customer_pets = this.salon_data.map(({pet}) => {
+        return {"pet_id": pet}
+      })
+      evntBus.$emit('customer_pets', this.customer_pets)
+      evntBus.$emit('salon_data', this.salon_data)
       this.dogSalonDialog = false;
     },
     formtCurrency(value) {
@@ -264,12 +308,20 @@ export default {
       this.get_groomers();
     });
 
+    evntBus.$on('clear_salon_data', ()=> {
+      this.salon_data = [{
+        pet: "",
+        groomer: "",
+        service: "",
+        services: [],
+        timeslot: "",
+        timeslots: [],
+      }]
+    });
+
     evntBus.$on('reload_salon_pets', (customer) => {
       this.get_customer_pets(customer)
     });
-
-
-    
   },
 };
 </script>

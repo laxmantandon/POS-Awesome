@@ -698,6 +698,7 @@ export default {
     mpesa_modes: [],
     float_precision: 2,
     currency_precision: 2,
+    salon_data: []
   }),
 
   methods: {
@@ -806,7 +807,7 @@ export default {
       data['redeemed_customer_credit'] = this.redeemed_customer_credit;
       data['customer_credit_dict'] = this.customer_credit_dict;
       data['is_cashback'] = this.is_cashback;
-
+      data['salon_data'] = this.salon_data;
       const vm = this;
       frappe.call({
         method: 'posawesome.posawesome.api.posapp.submit_invoice',
@@ -817,6 +818,7 @@ export default {
         async: true,
         callback: function (r) {
           if (r.message) {
+            evntBus.$emit('clear_salon_data');
             vm.load_print_page();
             evntBus.$emit('set_last_invoice', vm.invoice_doc.name);
             evntBus.$emit('show_mesage', {
@@ -1298,6 +1300,9 @@ export default {
     });
     evntBus.$on('set_mpesa_payment', (data) => {
       this.set_mpesa_payment(data);
+    });
+    evntBus.$on('salon_data', (data) => {
+      this.salon_data = data;
     });
     document.addEventListener('keydown', this.shortPay.bind(this));
   },
