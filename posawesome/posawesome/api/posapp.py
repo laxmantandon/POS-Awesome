@@ -315,7 +315,7 @@ def get_customer_names(pos_profile):
     condition += get_customer_group_condition(pos_profile)
     customers = frappe.db.sql(
         """
-        SELECT name, mobile_no, email_id, tax_id, customer_name, primary_address
+        SELECT name, mobile_no, email_id, tax_id, customer_name, primary_address, neo_membership_number, neo_membership_status
         FROM `tabCustomer`
         WHERE {0}
         ORDER by name
@@ -535,8 +535,9 @@ def submit_invoice(invoice, data):
                     "against_invoice": invoice_doc.get("name")
                 }).save(ignore_permissions=True).submit()
     except Exception as e:
+        frappe.msgprint(str(e))
         frappe.log_error(str(e))
-        frappe.throw(str(e))
+        #frappe.throw(str(e))
         
     return {"name": invoice_doc.name, "status": invoice_doc.docstatus}
 

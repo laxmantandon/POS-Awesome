@@ -14,6 +14,8 @@
                   v-html="data.item.customer_name"></v-list-item-title>
                 <v-list-item-subtitle v-if="data.item.customer_name != data.item.name"
                   v-html="`ID: ${data.item.name}`"></v-list-item-subtitle>
+                <v-list-item-subtitle 
+                  v-html="`MEMBERSHIP NO : ${data.item.neo_membership_number}`"></v-list-item-subtitle>
                 <v-list-item-subtitle v-if="data.item.tax_id"
                   v-html="`TAX ID: ${data.item.tax_id}`"></v-list-item-subtitle>
                 <v-list-item-subtitle v-if="data.item.email_id"
@@ -88,6 +90,7 @@ export default {
       const textThree = item.email_id ? item.email_id.toLowerCase() : '';
       const textFour = item.mobile_no ? item.mobile_no.toLowerCase() : '';
       const textFifth = item.name.toLowerCase();
+      const textSixth = item.neo_membership_number ? item.neo_membership_number.toLowerCase(): '';
       const searchText = queryText.toLowerCase();
 
       return (
@@ -95,7 +98,8 @@ export default {
         textTwo.indexOf(searchText) > -1 ||
         textThree.indexOf(searchText) > -1 ||
         textFour.indexOf(searchText) > -1 ||
-        textFifth.indexOf(searchText) > -1
+        textFifth.indexOf(searchText) > -1 ||
+        textSixth.indexOf(searchText) > -1
       );
     },
 
