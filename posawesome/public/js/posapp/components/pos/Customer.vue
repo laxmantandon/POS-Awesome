@@ -14,7 +14,7 @@
                   v-html="data.item.customer_name"></v-list-item-title>
                 <v-list-item-subtitle v-if="data.item.customer_name != data.item.name"
                   v-html="`ID: ${data.item.name}`"></v-list-item-subtitle>
-                <v-list-item-subtitle 
+                <v-list-item-subtitle v-if="data.item.neo_membership_number"
                   v-html="`MEMBERSHIP NO : ${data.item.neo_membership_number}`"></v-list-item-subtitle>
                 <v-list-item-subtitle v-if="data.item.tax_id"
                   v-html="`TAX ID: ${data.item.tax_id}`"></v-list-item-subtitle>
