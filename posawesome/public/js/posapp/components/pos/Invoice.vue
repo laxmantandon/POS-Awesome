@@ -1012,6 +1012,7 @@ export default {
             item.posa_row_id = this.makeid(20);
           }
           if (item.batch_no) {
+            item.batch_no_data = [{"batch_no": item.batch_no, "batch_qty": 1}]
             this.set_batch_qty(item, item.batch_no);
           }
         });
